@@ -9,7 +9,7 @@ Since FixupResourceForks has been apparently removed from macOS Sierra and later
 To address some issues of FixupResourceForks, the following improvements have been made:
 
 - it's a 32 and 64-bit binary.
-- it does not use deprecated API.
+- it does not use deprecated APIs.
 - it does not assume there are both FinderInfo and Resource Fork entries in the AppleDouble file.
 - the source code is available.
 - long options are called with --
