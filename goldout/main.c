@@ -708,12 +708,11 @@ int main(int argc, const char * argv[])
                 break;
                 
             case 'h':
-            default:
-                usage(argv[0]);
+			default:
+				usage(argv[0]);
                 
-                exit(2);
-                
-				printf ("\n");
+				exit(2);
+				
 				break;
         }
     }
