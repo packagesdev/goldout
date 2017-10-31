@@ -6,7 +6,18 @@ goldout does the opposite of goldin.
 
 Since FixupResourceForks has been apparently removed from macOS Sierra and later, it might be useful to have a replacement.
 
-Description forthcoming
+## Usage
+
+	$ goldout [options] file ...
+	
+	  Options:
+	  --help, -h           Show this usage guide
+	  --quiet, -q          Do not display the list of processed files
+	  --nosetinfo          Do not set the FinderInfo
+	  --nodelete           Do not delete the AppleDouble file
+	  --version            Show the version of this tool
+
+As with FixupResourceForks, if no file is provided, / will be used.
 
 ## Tests
 
