@@ -6,6 +6,16 @@ goldout does the opposite of goldin.
 
 Since FixupResourceForks has been apparently removed from macOS Sierra and later, it might be useful to have a replacement.
 
+To address some issues of FixupResourceForks, the following improvements have been made:
+
+- it's a 32 and 64-bit binary.
+- it does not use deprecated API.
+- it does not assume there are both FinderInfo and Resource Fork entries in the AppleDouble file.
+- the source code is available.
+- long options are called with --
+
+Minimum OS requirement is Mac OS X 10.8 at this time.
+
 ## Usage
 
 	$ goldout [options] file ...
@@ -17,7 +27,7 @@ Since FixupResourceForks has been apparently removed from macOS Sierra and later
 	  --nodelete           Do not delete the AppleDouble file
 	  --version            Show the version of this tool
 
-As with FixupResourceForks, if no file is provided, / will be used.
+As with FixupResourceForks, if no files are provided, / will be used.
 
 ## Tests
 
