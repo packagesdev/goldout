@@ -48,6 +48,8 @@ typedef struct asf_entry_t
     uint32_t entryLength;
 } asf_entry_t;
 
+#define FINDER_INFO_SIZE 32
+
 static void usage(const char * inProcesspath)
 {
 	printf("usage: %s [options] file ...\n",inProcesspath);
@@ -155,19 +157,6 @@ int fixUpResourceFork(char * inADFFileName,char * inADFPath)
 		fprintf(stderr, "Error processing \"%s\" (Unsupported version of AppleDouble).\n", inADFPath);
 		
         return 0;
-    }
-    
-    
-    for(uint32_t tFillerIndex=8;tFillerIndex<24;tFillerIndex++)
-    {
-        if (tBuffer[tFillerIndex]!=0)
-        {
-            close(tFileDescriptor);
-            
-            fprintf(stderr, "Error processing \"%s\" (Not an ApppleDouble file).\n", inADFPath);
-			
-			return 0;
-        }
     }
     
     // Number of Entries
@@ -471,14 +460,16 @@ int fixUpResourceFork(char * inADFFileName,char * inADFPath)
 					if (tEntry.entryLength==0)
 						break;
 					
-					if (tEntry.entryLength>EXTENDED_ATTRIBUTES_BUFFER_SIZE)
-                    {
-                        // This is really a suspicious Finder Info length
-                        
-                        // A COMPLETER
-                    }
+					if (tEntry.entryLength<FINDER_INFO_SIZE)
+					{
+						// This is not correct
+						
+						// A COMPLETER
+					}
                     
-                    ssize_t tReadSize=read(tFileDescriptor,tExtendedAttributesBuffer,tEntry.entryLength);
+					ssize_t tReadSize=FINDER_INFO_SIZE;
+					
+					tReadSize=read(tFileDescriptor,tExtendedAttributesBuffer,tReadSize);
                     
                     if (tReadSize<0)
                     {
@@ -510,7 +501,7 @@ int fixUpResourceFork(char * inADFFileName,char * inADFPath)
                         return 0;
                     }
                     
-                    if (tReadSize!=tEntry.entryLength)
+                    if (tReadSize!=FINDER_INFO_SIZE)
                     {
                         fprintf(stderr, "Error processing \"%s\" (The AppleDouble file total size is smaller than what the header states)\n", inADFPath);
                         
@@ -521,7 +512,7 @@ int fixUpResourceFork(char * inADFFileName,char * inADFPath)
                         return 0;
                     }
                     
-                    if (fsetxattr(tDataFileDescriptor, XATTR_FINDERINFO_NAME, tExtendedAttributesBuffer, tEntry.entryLength, 0, 0)!=0)
+                    if (fsetxattr(tDataFileDescriptor, XATTR_FINDERINFO_NAME, tExtendedAttributesBuffer, FINDER_INFO_SIZE, 0, 0)!=0)
                     {
                         // A COMPLETER
                         
@@ -531,11 +522,18 @@ int fixUpResourceFork(char * inADFFileName,char * inADFPath)
                         
                         return 0;
                     }
+					
+					if (tEntry.entryLength>FINDER_INFO_SIZE)
+					{
+						// There are probably additional extended attributes to restore
+						
+						// A COMPLETER
+					}
                 }
-                
+				
                 break;
         }
-        
+		
         tEntryIndex++;
         
     }
